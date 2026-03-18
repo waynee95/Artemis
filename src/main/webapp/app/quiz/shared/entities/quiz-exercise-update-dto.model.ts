@@ -9,7 +9,7 @@ export interface QuizExerciseUpdateDTO {
     title?: string;
     channelName?: string;
     categories?: ExerciseCategory[];
-    competencyLinks?: CompetencyExerciseLinkUpdateDTO[];
+    competencyLinks?: CompetencyLinkUpdateDTO[];
     difficulty?: DifficultyLevel;
     duration?: number;
     randomizeQuestionOrder?: boolean;
@@ -22,14 +22,14 @@ export interface QuizExerciseUpdateDTO {
     quizQuestions?: QuizQuestion[];
 }
 
-interface CompetencyExerciseLinkUpdateDTO {
-    competencyId?: number;
-    weight?: number;
+interface CompetencyLinkUpdateDTO {
+    competency: { id: number };
+    weight: number;
 }
 
-function toCompetencyExerciseLinkUpdateDTO(link: CompetencyExerciseLink): CompetencyExerciseLinkUpdateDTO {
+function toCompetencyLinkUpdateDTO(link: CompetencyExerciseLink): CompetencyLinkUpdateDTO {
     return {
-        competencyId: link.competency?.id,
+        competency: { id: link.competency!.id! },
         weight: link.weight,
     };
 }
@@ -39,7 +39,7 @@ export function toQuizExerciseUpdateDTO(quizExercise: QuizExercise): QuizExercis
         title: quizExercise.title,
         channelName: quizExercise.channelName,
         categories: quizExercise.categories,
-        competencyLinks: quizExercise.competencyLinks?.map(toCompetencyExerciseLinkUpdateDTO) || [],
+        competencyLinks: quizExercise.competencyLinks?.map(toCompetencyLinkUpdateDTO) || [],
         difficulty: quizExercise.difficulty,
         duration: quizExercise.duration,
         randomizeQuestionOrder: quizExercise.randomizeQuestionOrder,
