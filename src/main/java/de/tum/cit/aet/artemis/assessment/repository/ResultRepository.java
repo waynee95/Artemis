@@ -51,29 +51,16 @@ import de.tum.cit.aet.artemis.programming.domain.ProgrammingExercise;
 public interface ResultRepository extends ArtemisJpaRepository<Result, Long> {
 
     /**
-     * Deletes assessment notes associated with a result via bulk JPQL DELETE.
-     * This bypasses Hibernate entity lifecycle and L2 cache, which is necessary
-     * when the result will also be bulk-deleted afterward.
-     *
-     * @param resultId the id of the result whose assessment notes should be deleted
-     */
-    @Transactional // ok because of modifying query
-    @Modifying
-    @Query(value = "DELETE FROM assessment_note WHERE result_id = :resultId", nativeQuery = true)
-    void deleteAssessmentNoteByResultId(@Param("resultId") long resultId);
-
-    /**
-     * Deletes a result via bulk JPQL DELETE, bypassing Hibernate entity lifecycle.
-     * All references (feedbacks, assessment notes, complaints, etc.) must be deleted before calling this.
-     * This avoids L2 cache staleness issues with Hibernate 6.6+ where cascade operations
-     * on already bulk-deleted children cause JpaObjectRetrievalFailureException.
+     * Deletes a result via JPQL bulk delete, bypassing Hibernate cascade and JPA lifecycle callbacks.
+     * All child entities must be deleted first.
+     * See {@link de.tum.cit.aet.artemis.assessment.service.ResultService#deleteResult ResultService.deleteResult} Path 2 for full details.
      *
      * @param resultId the id of the result to delete
      */
-    @Transactional // ok because of modifying query
     @Modifying
+    @Transactional // ok because of delete
     @Query("DELETE FROM Result r WHERE r.id = :resultId")
-    void deleteByResultId(@Param("resultId") long resultId);
+    void deleteResultById(@Param("resultId") long resultId);
 
     /**
      * Count the number of results for a course by its exercise IDs.
