@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "saia": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "SAIA",
+      "options": {
+        "baseURL": "https://chat-ai.academiccloud.de/v1",
+        "apiKey": "{env:SAIA_API_KEY}"
+      },
+      "models": {}
+    }
+  },
+  "plugin": ["./saia"]
+}
